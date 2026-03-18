@@ -1,0 +1,20 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "twitch-bot"
+version = "0.0.1"
+description = "Twitch bot on TwitchIO."
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MPL-2.0"
+license-files = ["LICENSE"]
+authors = [{ name = "d43m0n4rch7", email = "d43m0n4rch7@gmail.com" }]
+dependencies = ["twitchio[starlette]>=3.3.2,<4.0.0", "pydantic-settings>=2.14.0"]
+
+[project.scripts]
+twitch-bot = "twitch_bot.main:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/twitch_bot"]
