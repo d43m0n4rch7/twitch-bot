@@ -1,7 +1,10 @@
 # Twitch Bot
 
-TwitchIO bot with planned PostgreSQL token storage.
+TwitchIO bot with PostgreSQL-backed tokens.
 
-## Status
+## Requirements
 
-Early scaffolding.
+- Python 3.12+
+- PostgreSQL
+
+Copy `.env.example` to `.env` to get started.
