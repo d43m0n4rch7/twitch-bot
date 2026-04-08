@@ -4,17 +4,149 @@ build-backend = "hatchling.build"
 
 [project]
 name = "twitch-bot"
-version = "0.0.1"
-description = "Twitch bot on TwitchIO."
+version = "0.1.0"
+description = "Twitch bot on TwitchIO 3 (AutoBot) with SQLAlchemy 2, Alembic, PostgreSQL and a component architecture."
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.12,<3.13"
 license = "MPL-2.0"
 license-files = ["LICENSE"]
-authors = [{ name = "d43m0n4rch7", email = "d43m0n4rch7@gmail.com" }]
-dependencies = ["twitchio[starlette]>=3.3.2,<4.0.0", "pydantic-settings>=2.14.0"]
+authors = [
+    { name = "d43m0n4rch7", email = "d43m0n4rch7@gmail.com" },
+]
+keywords = [
+    "twitch",
+    "twitchio",
+    "bot",
+    "eventsub",
+    "oauth",
+    "sqlalchemy",
+    "alembic",
+    "asyncpg",
+    "postgresql",
+    "chat-bot",
+    "component",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Framework :: AsyncIO",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Communications :: Chat",
+    "Topic :: Internet",
+    "Topic :: Software Development :: Libraries",
+    "Typing :: Typed",
+]
+dependencies = [
+    "alembic>=1.14.0",
+    "colorlog>=6.9.0",
+    "asyncpg>=0.31.0",
+    "psycopg[binary]>=3.2.0",
+    "pydantic>=2.7.0",
+    "pydantic-settings>=2.14.0",
+    "sqlalchemy[asyncio]>=2.0.36",
+    "twitchio[starlette]>=3.3.2,<4.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "asyncpg-stubs>=0.31.0",
+    "pre-commit>=4.0.0",
+    "pyright>=1.1.400",
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.25.0",
+    "ruff>=0.15.0",
+]
 
 [project.scripts]
 twitch-bot = "twitch_bot.main:main"
 
+[project.urls]
+Homepage = "https://github.com/d43m0n4rch7/twitch-bot"
+Repository = "https://github.com/d43m0n4rch7/twitch-bot"
+Issues = "https://github.com/d43m0n4rch7/twitch-bot/issues"
+
+[tool.uv]
+default-groups = ["dev"]
+package = true
+
 [tool.hatch.build.targets.wheel]
-packages = ["src/twitch_bot"]
+packages = ["src/twitch_bot", "src/database"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+src = ["src", "tests"]
+preview = false
+exclude = [".venv"]
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "W",
+    "F",
+    "I",
+    "UP",
+    "B",
+    "ANN",
+    "D",
+    "Q",
+    "ASYNC",
+    "S",
+    "SIM",
+    "RUF",
+]
+ignore = [
+    "D100",
+    "D104",
+    "ANN401",
+    "S101",
+    "TRY003",
+]
+flake8-annotations.allow-star-arg-any = true
+flake8-quotes.inline-quotes = "double"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["D", "ANN", "S101", "S106"]
+"alembic/**" = ["D", "INP001", "E402"]
+"src/twitch_bot/components/basic.py" = ["S311"]
+"src/twitch_bot/main.py" = ["S101"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["twitch_bot", "database"]
+split-on-trailing-comma = true
+combine-as-imports = true
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+pythonpath = ["src"]
+filterwarnings = [
+    # aiohttp warns about subclassing web.Application on any import of
+    # twitchio.web.AiohttpAdapter — TwitchIO's own DeprecationWarning, unrelated
+    # to this project and not fixable on our side.
+    "ignore:Inheritance class AiohttpAdapter from web.Application is discouraged:DeprecationWarning",
+]
+
+[tool.pyright]
+include = ["src", "tests"]
+exclude = [".venv", "**/__pycache__", "alembic"]
+pythonVersion = "3.12"
+typeCheckingMode = "standard"
+venvPath = "."
+venv = ".venv"
+extraPaths = ["src"]
