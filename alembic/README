@@ -1,0 +1,4 @@
+# Alembic migration environment for twitch-bot.
+# Revisions live in versions/. Runtime applies them via
+# twitch_bot.core.database.migrations.run_migrations on startup.
+
