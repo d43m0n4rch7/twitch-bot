@@ -1,0 +1,62 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Установить uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - name: Установить зависимости
+        run: uv sync --frozen
+
+      - name: Линт
+        run: uv run ruff check .
+
+  deploy:
+    needs: check
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Деплой по SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          port: ${{ secrets.DEPLOY_PORT }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+
+            cd "${{ secrets.DEPLOY_PATH }}"
+
+            git fetch origin main
+            git reset --hard origin/main
+
+            ~/.local/bin/uv sync --no-dev --frozen
+
+            sudo systemctl restart twitch-bot.service
+
+            # Даём сервису время осесть или уйти в crash-loop,
+            # чтобы деплой падал явно, а не оставлял сломанный сервис.
+            sleep 5
+            if ! sudo systemctl is-active --quiet twitch-bot.service; then
+              echo "twitch-bot.service не поднялся, последние 50 строк логов:"
+              sudo journalctl -u twitch-bot.service -n 50 --no-pager
+              exit 1
+            fi
+
+            echo "Задеплоено $(git rev-parse --short HEAD)"
