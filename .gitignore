@@ -1,0 +1,51 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# --- Сборка / дистрибутив ---
+build/
+dist/
+*.egg-info/
+.eggs/
+wheels/
+
+# --- Виртуальное окружение (uv/venv) ---
+.venv/
+venv/
+env/
+
+# --- uv ---
+# uv.lock оставляем в репозитории — он гарантирует воспроизводимую сборку.
+.uv-cache/
+
+# --- Переменные окружения ---
+.env
+.env.*
+!.env.example
+
+# --- Тесты и покрытие ---
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# --- Линт / тайпчекер ---
+.ruff_cache/
+.pyright/
+.mypy_cache/
+
+# --- Логи и рантайм-артефакты бота ---
+*.log
+
+# --- IDE / редакторы ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- ОС ---
+.DS_Store
+Thumbs.db
