@@ -1,0 +1,34 @@
+# Reverse proxy для endpoint'ов OAuth + EventSub webhook бота
+# (маршруты: /oauth, /oauth/callback, /callback — обслуживает
+# StarletteAdapter TwitchIO на 127.0.0.1:4343).
+#
+# Как пользоваться:
+#   1. Замените oauth.example.com на свой реальный поддомен (OAUTH_DOMAIN
+#      в .env, без префикса https://).
+#   2. Положите файл в /etc/caddy/twitch-bot.caddy (или туда, где лежат
+#      остальные site-файлы) и `import`'ните его из основного Caddyfile:
+#
+#        import /etc/caddy/twitch-bot.caddy
+#
+#      либо вставьте блок ниже прямо в существующий Caddyfile.
+#   3. sudo systemctl reload caddy
+#
+# Если уже есть wildcard-сертификат (например, через DNS-01 плагин на
+# *.yourdomain.com), Caddy подхватит его сам — ничего дополнительно
+# прописывать не нужно. Если это единственный сайт на этом домене,
+# раскомментируйте блок `tls` ниже и настройте так же, как остальные
+# поддомены.
+
+oauth.example.com {
+    # tls {
+    #     dns <your-dns-provider-plugin> {env.CADDY_DNS_API_TOKEN}
+    # }
+
+    reverse_proxy 127.0.0.1:4343
+
+    encode gzip
+
+    log {
+        output file /var/log/caddy/twitch-bot.log
+    }
+}

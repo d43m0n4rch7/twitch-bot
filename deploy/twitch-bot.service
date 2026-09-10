@@ -1,0 +1,35 @@
+# Установка:
+#   sudo cp twitch-bot.service /etc/systemd/system/twitch-bot.service
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now twitch-bot.service
+#
+# Логи:
+#   sudo journalctl -u twitch-bot.service -f
+#
+# Ожидает репозиторий в WorkingDirectory, виртуальное окружение в .venv
+# (создаётся через `uv sync`) и production `.env` рядом с ним.
+
+[Unit]
+Description=Twitch-бот (TwitchIO)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=twitchbot
+Group=twitchbot
+WorkingDirectory=/opt/twitch-bot
+EnvironmentFile=/opt/twitch-bot/.env
+ExecStart=/opt/twitch-bot/.venv/bin/python -m twitch_bot.main
+Restart=on-failure
+RestartSec=10
+
+# Ужесточение изоляции
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/twitch-bot
+
+[Install]
+WantedBy=multi-user.target
