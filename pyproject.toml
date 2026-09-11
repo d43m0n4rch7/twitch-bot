@@ -120,6 +120,12 @@ asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 testpaths = ["tests"]
 pythonpath = ["src"]
+filterwarnings = [
+    # aiohttp предупреждает о наследовании от web.Application при любом импорте
+    # twitchio.web.AiohttpAdapter — это их собственный DeprecationWarning, к нашему
+    # коду не имеет отношения и никак не устраняется на нашей стороне.
+    "ignore:Inheritance class AiohttpAdapter from web.Application is discouraged:DeprecationWarning",
+]
 
 [tool.pyright]
 include = ["src", "tests"]
