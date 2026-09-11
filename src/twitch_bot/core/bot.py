@@ -100,7 +100,7 @@ class TwitchBot(commands.AutoBot):
         self.scopes_only = scopes_only
         self.domain = (LOCAL_DOMAIN if local else oauth_domain).rstrip("/")
 
-        adapter = (
+        adapter: StarletteAdapter[Any] | None = (
             None if local else StarletteAdapter(host="0.0.0.0", domain=self.domain, eventsub_secret=eventsub_secret)
         )
 
