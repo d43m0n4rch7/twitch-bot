@@ -1,0 +1,132 @@
+name: "🐛 Баг-репорт"
+description: Сообщить о том, что бот ведёт себя не так, как должен
+title: "[bug]: "
+labels: ["bug", "triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Спасибо, что сообщаете о проблеме! Пожалуйста, заполните форму
+        как можно подробнее — это сильно экономит время на диагностику.
+
+        Перед отправкой убедитесь, что вы на актуальной версии `main` и
+        проверили [CONTRIBUTING.md](../../CONTRIBUTING.md), если сомневаетесь
+        в настройке окружения.
+
+  - type: checkboxes
+    id: prechecks
+    attributes:
+      label: Перед отправкой
+      options:
+        - label: Я проверил открытые и закрытые issue — похожей проблемы не нашёл
+          required: true
+        - label: Я воспроизвёл проблему на последней версии ветки `main`
+          required: true
+        - label: Я убрал из логов ниже все секреты (токены, `TWITCH_CLIENT_SECRET`, `EVENTSUB_SECRET`, пароль из `DATABASE_URL`)
+          required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: Что произошло
+      description: Кратко опишите проблему.
+      placeholder: Например — бот не отвечает на команду !ping на публичном канале, хотя в логах видно входящее сообщение.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Как воспроизвести
+      description: Шаги по порядку, которые приводят к багу.
+      placeholder: |
+        1. Запустил бота командой `just run-twitch-local`
+        2. Авторизовал публичный канал по ссылке OAuth
+        3. Написал в чат `!ping`
+        4. Бот не ответил, в логе — ничего
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Ожидаемое поведение
+      description: Что должно было произойти вместо этого.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: run-mode
+    attributes:
+      label: Режим запуска
+      description: Как запущен бот.
+      options:
+        - Локально, флаг --local
+        - Локально, публичный домен + Caddy (без --local)
+        - Продакшен — systemd-сервис за Caddy (deploy/)
+        - Другое (уточните в разделе "Дополнительный контекст")
+    validations:
+      required: true
+
+  - type: dropdown
+    id: postgres
+    attributes:
+      label: Где крутится PostgreSQL
+      options:
+        - Supabase
+        - Локально (Docker/нативно)
+        - Другой managed-провайдер
+        - Самостоятельно поднятый сервер
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Версия / коммит
+      description: Вывод `git rev-parse --short HEAD`, либо тег релиза.
+      placeholder: например, a1b2c3d
+    validations:
+      required: true
+
+  - type: input
+    id: python-version
+    attributes:
+      label: Версия Python
+      description: Вывод `python --version`.
+      placeholder: например, Python 3.14.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: ОС
+      options:
+        - Linux
+        - macOS
+        - Windows
+        - Другое
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Логи / traceback
+      description: |
+        Вставьте релевантный кусок лога. Уровень DEBUG можно включить флагом
+        `--log-level DEBUG` или переменной `LOG_LEVEL=DEBUG` в `.env`.
+        Поле автоматически оформляется как блок кода.
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Дополнительный контекст
+      description: Скриншоты, связанные issue, нестандартные изменения в конфиге и т.д.
+    validations:
+      required: false

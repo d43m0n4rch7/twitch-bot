@@ -1,0 +1,99 @@
+name: "✨ Запрос фичи"
+description: Предложить новую команду, листенер или другую функциональность
+title: "[feature]: "
+labels: ["enhancement"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Спасибо за идею! Чем конкретнее описание — тем проще оценить, как
+        она ложится на архитектуру бота (компоненты, EventSub-подписки,
+        OAuth-скоупы).
+
+  - type: checkboxes
+    id: prechecks
+    attributes:
+      label: Перед отправкой
+      options:
+        - label: Я проверил открытые issue — похожего предложения не нашёл
+          required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Какую проблему это решает
+      description: Опишите, чего сейчас не хватает и с какой задачей это связано.
+      placeholder: |
+        Например: «Хочу, чтобы бот приветствовал зрителя не только текстом,
+        но и звуковым алертом» или «Не хватает команды для таймаута по
+        никнейму».
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Предлагаемое решение
+      description: Как вы видите реализацию — по возможности с деталями поведения.
+      placeholder: |
+        Новая команда !timeout <ник> <секунды>, доступна модераторам на
+        любом авторизованном канале. Использует Twitch API moderation.ban
+        с duration.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Тип изменения
+      description: На каком уровне проекта это должно жить.
+      multiple: true
+      options:
+        - Новая команда чата (components/)
+        - Новый листенер EventSub (components/events.py)
+        - Изменение ядра (core/ — бот, БД, конфиг)
+        - Изменение CLI (main.py)
+        - Инфраструктура / деплой (deploy/, .github/workflows/)
+        - Документация
+        - Другое
+    validations:
+      required: true
+
+  - type: dropdown
+    id: access-level
+    attributes:
+      label: Уровень доступа
+      description: Актуально только для новых команд или листенеров.
+      options:
+        - Доступно на любом авторизованном канале (PublicComponent)
+        - Только на канале владельца (OwnerOnlyComponent)
+        - Не применимо к этой фиче
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: requirements
+    attributes:
+      label: Требует изменений в авторизации
+      description: Отметьте, если понимаете, что фича этого требует — это не блокирует заявку, просто помогает оценить объём работы.
+      options:
+        - label: Нужны новые OAuth-скоупы (BOT_SCOPES / OWNER_SCOPES / PUBLIC_SCOPES в core/bot.py)
+        - label: Нужны новые подписки EventSub (core/eventsub.py)
+        - label: Потребует повторной авторизации уже подключённых каналов
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Альтернативы, которые вы рассматривали
+      description: Другие способы решить ту же задачу, если такие есть, и почему они хуже предложенного варианта.
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Дополнительный контекст
+      description: Ссылки на документацию Twitch API/EventSub, скриншоты, примеры из других ботов.
+    validations:
+      required: false
