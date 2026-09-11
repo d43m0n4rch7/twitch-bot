@@ -61,6 +61,14 @@ class BasicCommands(PublicComponent):
         """
         await ctx.reply("discord.gg/...")
 
+    @commands.command(name="ci")
+    async def ci_test(self, ctx: TwitchContext) -> None:
+        """Тестовая команда — специально, чтобы пушем проверить, работает ли GitHub Actions.
+
+        !ci
+        """
+        await ctx.reply("CI-тест пройден!")
+
 
 class OwnerCommands(OwnerOnlyComponent):
     """Команды, которые имеют смысл только на канале владельца бота."""
