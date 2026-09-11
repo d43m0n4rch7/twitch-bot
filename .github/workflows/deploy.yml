@@ -40,23 +40,8 @@ jobs:
           script_stop: true
           script: |
             set -euo pipefail
-
             cd "${{ secrets.DEPLOY_PATH }}"
-
             git fetch origin main
             git reset --hard origin/main
-
             ~/.local/bin/uv sync --no-dev --frozen
-
             sudo systemctl restart twitch-bot.service
-
-            # Даём сервису время осесть или уйти в crash-loop,
-            # чтобы деплой падал явно, а не оставлял сломанный сервис.
-            sleep 5
-            if ! sudo systemctl is-active --quiet twitch-bot.service; then
-              echo "twitch-bot.service не поднялся, последние 50 строк логов:"
-              sudo journalctl -u twitch-bot.service -n 50 --no-pager
-              exit 1
-            fi
-
-            echo "Задеплоено $(git rev-parse --short HEAD)"

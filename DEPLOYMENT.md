@@ -121,12 +121,14 @@ GitHub Actions после `git pull` и `uv sync` перезапускает uni
 нужному пользователю право на это без пароля:
 
 ```bash
-echo 'twitchbot ALL=(root) NOPASSWD: /usr/bin/systemctl restart twitch-bot.service, /usr/bin/systemctl is-active twitch-bot.service, /usr/bin/journalctl -u twitch-bot.service -n 50 --no-pager' | sudo tee /etc/sudoers.d/twitch-bot-deploy
+sudo tee /etc/sudoers.d/twitch-bot-deploy << 'EOF'
+twitchbot ALL=(root) NOPASSWD: /usr/bin/systemctl restart twitch-bot.service
+EOF
 sudo chmod 440 /etc/sudoers.d/twitch-bot-deploy
+sudo visudo -c   # должно сказать "parsed OK"
 ```
 
-Сначала проверьте `which systemctl` и `which journalctl` и подставьте
-реальные пути, если они отличаются от `/usr/bin/`.
+Сначала проверьте `which systemctl` и подставьте реальные пути, если они отличаются от `/usr/bin/`.
 
 ## 9. Создать SSH-пользователя, к которому подключается GitHub Actions
 
@@ -179,8 +181,8 @@ Repo Settings → Secrets and variables → Actions:
 ## 11. Проверить
 
 Запушьте коммит в `main` и смотрите вкладку Actions. Workflow прогонит
-линтер, зайдёт по SSH, подтянет коммит, выполнит `uv sync`, перезапустит
-сервис и упадёт с последними 50 строками логов, если сервис не поднялся.
+линтер, зайдёт по SSH, подтянет коммит, выполнит `uv sync` и перезапустит
+сервис.
 
 ## Заметки
 
