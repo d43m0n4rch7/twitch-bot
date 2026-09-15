@@ -74,6 +74,16 @@ uv run alembic revision --autogenerate -m "description"
 
 Push to `main`. The workflow SSHs to the server, resets to `origin/main`, runs `uv sync --no-dev --frozen`, and restarts `twitch-bot.service`. See `DEPLOYMENT.md`.
 
+## CI
+
+Pull requests and pushes to `main` run lint, format check, typecheck, and tests via `.github/workflows/ci.yml`.
+
+## Community
+
+- Contributing: [`.github/CONTRIBUTING.md`](.github/CONTRIBUTING.md)
+- Code of Conduct: [`.github/CODE_OF_CONDUCT.md`](.github/CODE_OF_CONDUCT.md)
+- Security: [`.github/SECURITY.md`](.github/SECURITY.md)
+
 ## License
 
 Mozilla Public License 2.0 — see `LICENSE`.
