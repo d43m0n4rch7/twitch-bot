@@ -1,0 +1,37 @@
+# yaml-language-server: $schema=https://json.schemastore.org/pre-commit-config.json
+#
+# Install: just pre-commit-install
+# Run all: just pre-commit-run
+
+exclude: ^(\\.venv/|dist/|build/)
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=1024]
+      - id: detect-private-key
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.0
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+      - id: ruff-format
+
+  - repo: local
+    hooks:
+      - id: pyright
+        name: pyright
+        description: Run pyright on the project
+        entry: uv run --no-sync pyright
+        language: system
+        pass_filenames: false
+        always_run: true
+        require_serial: true
