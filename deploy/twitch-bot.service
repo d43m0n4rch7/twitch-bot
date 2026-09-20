@@ -1,0 +1,33 @@
+# Install:
+#   sudo cp deploy/twitch-bot.service /etc/systemd/system/twitch-bot.service
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now twitch-bot.service
+#
+# Expects the repository at WorkingDirectory, a virtualenv at .venv
+# (created by `uv sync --no-dev`), and the production .env next to it.
+# Runs as the dedicated twitchbot system user.
+
+[Unit]
+Description=Twitch bot (TwitchIO)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=twitchbot
+Group=twitchbot
+WorkingDirectory=/opt/twitch-bot
+EnvironmentFile=/opt/twitch-bot/.env
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/twitch-bot/.venv/bin/twitch-bot
+Restart=on-failure
+RestartSec=10
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/twitch-bot
+
+[Install]
+WantedBy=multi-user.target
